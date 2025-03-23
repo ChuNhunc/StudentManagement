@@ -1,13 +1,15 @@
 const express = require("express");
-const sql = require("mssql");
 const cors = require("cors");
-const {connect} = require("./db.js");
+const sequelize = require("./sequelize.js");
+const authRoutes = require("./routes/authRoute.js");
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
-connect()
-  .then((connection) => {
+sequelize
+  .authenticate()
+  .then(() => {
     console.log("Connected to database");
   })
   .catch((error) => {
@@ -15,10 +17,8 @@ connect()
     console.log("Error");
   });
 
-app.get("/", (req, res) => {
-  return res.json({ message: "Hello World" });
-});
+app.use("/auth", authRoutes);
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+app.listen(3001, () => {
+  console.log("Server is running on port 3001");
 });
