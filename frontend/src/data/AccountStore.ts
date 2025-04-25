@@ -1,38 +1,59 @@
 import axios from "axios";
 import { makeAutoObservable } from "mobx";
+import { getAllAccount , getAllStudentAccount, getAllTeacherAccount, getAllAdminAccount} from "../service/accountService";
 
-type Account = {
-    username: string;
-    password: string;
-    role: number;
+export type Account = {
+    AccountID: number;
+    Username: string;
+    Password: string;
+    RoleID: number;
+    CreatedAt: Date;
 }
 
 class AccountStore {
-    account: Account | null = null;
-    token: string = '';
+    account: Account[] = [];
+   
 
     constructor() {
         makeAutoObservable(this)
     }
 
-    loadAccount() {}
+    async getAll() {
+        try {
+            const response = await getAllAccount();
+            this.account = response ;
+        } catch (error) {
+            console.error("Error fetching accounts:", error);
+        }
+    }
     
-    setToken(token: string) {
-      this.token = token;
+    async getStudentAccount() {
+        try {
+            const response = await getAllStudentAccount();
+            console.log("API Response:", response);
+            this.account = response;
+        } catch (error) {
+            console.error("Error fetching student accounts:", error);
+        }
     }
 
-    async login() {
+    async getTeacherAccount() {
         try {
-            const response = await axios.post('http://localhost:3000/login', {
-              userName: this.account?.username,
-              passWord: this.account?.password,
-            });
-            this.setToken(response.data.token);
-            console.log('Login successful:', response.data);
-          } catch (error: any) {
-            console.error('Login failed:', error.response ? error.response.data : error.message);
-          }
-      }
+            const response = await getAllTeacherAccount();
+            this.account = response ;
+        } catch (error) {
+            console.error("Error fetching teacher accounts:", error);
+        }
+    }
+
+    async getAdminAccount() {
+        try {
+            const response = await getAllAdminAccount();
+            this.account = response ;
+        } catch (error) {
+            console.error("Error fetching admin accounts:", error);
+        }
+    }
 }
 
 export default new AccountStore();

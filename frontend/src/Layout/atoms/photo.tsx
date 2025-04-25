@@ -12,12 +12,30 @@ type ProfilePhotoProps = {
 export const ProfilePhoto = ({src, alt, sx, children}: ProfilePhotoProps) => {
     return (
         <>
-            <Box component='img' src = {"images/profilePhoto.jpg"} 
+            <Box component='img' src = "/images/profilePhoto.jpg"
                 sx={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
                     borderRadius: '50%',
+                    ...sx
+                }}
+            >
+                {children}
+            </Box>
+        </>
+    )
+}
+
+export const Logo = ({src, alt, sx, children}: ProfilePhotoProps) => {
+    return (
+        <>
+            <Box component='img' src = "/images/logo.png"
+                sx={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '10px',
                     ...sx
                 }}
             >

@@ -36,9 +36,9 @@ const Account = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    // CreatedAt: {
-    //   type: DataTypes.DATE,
-    // },
+    CreatedAt: {
+      type: DataTypes.DATE,
+    },
   },
   {
     timestamps: false,

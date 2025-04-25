@@ -1,7 +1,7 @@
 import { Box, Button, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
-import MainTemplate from "../template/MainTemplate";
 import { useState } from "react";
 import { register } from "../../service/authService";
+import { AdminTemplate } from "../template/MainTemplate";
 
 const RegisterPage = () => {
     const [roleID, setRoleID] = useState<number>(1);
@@ -27,7 +27,7 @@ const RegisterPage = () => {
         }
     }
     return (
-        <MainTemplate>
+        <AdminTemplate>
             <Container
                 sx={{
                     display: 'flex',
@@ -101,7 +101,7 @@ const RegisterPage = () => {
                 Tạo tài khoản
                 </Button>
             </Container>
-        </MainTemplate>
+        </AdminTemplate>
     )
 }
 

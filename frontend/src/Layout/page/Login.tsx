@@ -20,7 +20,11 @@ const Login = () => {
     try {
       console.log(username, password);
       const roleID = await login(username, password);
-      navigate('/homepage', { state: { roleID } });
+      if (roleID === 1) {
+        navigate('/student', { state: { roleID } }); 
+      }else if (roleID === 3) {
+        navigate('/admin', { state: { roleID } }); 
+      }
     } catch (err: any) {
       alert(err.response?.data?.message);
     }

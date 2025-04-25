@@ -19,7 +19,7 @@ export const HeaderText = ({title, icon, sx, children}: HeaderTextProps) => {
                     display: 'flex',
                     color: '#28333E',
                     alignItems: 'center',
-                    paddingLeft: '100px'
+                    paddingLeft: '20px'
                 }}
             >
                 <Icon name={icon}></Icon>

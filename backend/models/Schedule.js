@@ -28,10 +28,14 @@ const Schedule = sequelize.define("Schedule", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  Note: {
+  Notes: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+},
+{
+  tableName: "Schedule",
+  timestamps: false,
 });
 
 module.exports = Schedule;

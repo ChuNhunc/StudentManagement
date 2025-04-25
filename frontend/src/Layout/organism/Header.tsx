@@ -10,7 +10,8 @@ export const Header = () => {
                     height: '70px',
                     display: 'fixed',
                     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
-                    paddingRight: '60px'
+                    paddingRight: '60px',
+                    backgroundColor: '#F8FAFB'
                 }}
             >
                 <HeaderText title='Student Management' icon='explore'></HeaderText>

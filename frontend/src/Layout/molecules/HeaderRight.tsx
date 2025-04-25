@@ -36,7 +36,7 @@ export const HeaderRight = () => {
                         width: '30px',
                     }}
                 >
-                    <ProfilePhoto src='profilePhoto.jpg' alt='profilePhoto'></ProfilePhoto>
+                    <ProfilePhoto src='/images/profilePhoto.jpg' alt='profilePhoto'></ProfilePhoto>
                 </Box>
             </Box>
         </>

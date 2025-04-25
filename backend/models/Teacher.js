@@ -11,7 +11,7 @@ const Teachers = sequelize.define(
         },
         AccountID:{
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         },
         FullName: {
             type: DataTypes.STRING,
@@ -29,6 +29,9 @@ const Teachers = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false
         },
+    },
+    {
+        timestamps: false,
     }
 )
 

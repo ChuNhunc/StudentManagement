@@ -1,15 +1,39 @@
 
-import { useLocation, useNavigate } from "react-router-dom";
-import MainTemplate from "../template/MainTemplate";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { AdminTemplate, StudentTemplate } from "../template/MainTemplate";
 
-const HomePage = () => {
+export const AdminHomePage = () => {
     const location = useLocation();
-    const roleID = location.state.roleID;
+    // const roleID = location.state.roleID;
     return (
-        <MainTemplate>
-            <h1>Student HomePage</h1>
-        </MainTemplate>
+        <AdminTemplate>
+            <Outlet/>
+        </AdminTemplate>
+        // <>
+        //     {roleID === 1 ? (
+        //         <StudentTemplate>
+        //             <Outlet />
+        //         </StudentTemplate>
+        //     ) : roleID === 2 ? (
+        //         <StudentTemplate>
+        //             <Outlet />
+        //         </StudentTemplate>
+        //     ) : roleID === 3 ? (
+        //         <AdminTemplate>
+        //             <Outlet />
+        //         </AdminTemplate>
+        //     ) : (
+        //         <div>Không có quyền truy cập</div>
+        //     )}
+        // </>
     )
 }
 
-export default HomePage;
+export const StudentHomePage = () => {
+    const location = useLocation();
+    return (
+        <StudentTemplate>
+            <Outlet/>
+        </StudentTemplate>
+    )
+}
