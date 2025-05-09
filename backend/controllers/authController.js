@@ -5,8 +5,9 @@ const Student = require("../models/Student.js");
 const Teacher = require("../models/Teacher.js");
 const sequelize = require("../sequelize.js");
 const validator = require("validator");
+const dotenv = require("dotenv");
 
-const secretKey = "abcXz123";
+const secretKey = process.env.SECRET_KEY;
 
 const getNextAccountId = async () => {
   const result = await Account.findOne({
@@ -126,9 +127,8 @@ const generateStudentAccount = async (req, res) => {
   try {
     console.log("Request body:", req.body);
     const StudentID = req.body.StudentID;
-    const password = String(req.body.FullName + req.body.DateOfBirth);
+    const password = "a123456";
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("Hashed password:", bcrypt.hash("a123456", 10));
     const account = await Account.create({
       AccountID: await getNextAccountId(),
       Username: StudentID,
@@ -184,7 +184,7 @@ const changePassword = async (req, res) => {
 const generateTeacherAccount = async (req, res) => {
   try {
     const TeacherID = req.body.TeacherID;
-    const password = String(req.body.FullName);
+    const password = 'a123456';
     const hashedPassword = await bcrypt.hash(password, 10);
     const account = await Account.create({
       AccountID: await getNextAccountId(),

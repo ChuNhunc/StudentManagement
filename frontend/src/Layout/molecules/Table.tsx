@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 
 import * as React from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { SMContext } from "../../context/context";
 import { Class } from "../../data/ClassStore";
@@ -14,26 +14,19 @@ import App from "../../App";
 import ApplicationStore from "../../data/ApplicationStore";
 import { observer } from "mobx-react-lite";
 import { Text } from "../atoms/Typography";
+import { Teacher } from "../../data/TeacherStore";
 
-type ClassTable = {
-  ClassID: string;
-  Course: string;
-  TeacherID: string;
-  ClassName: string;
-  StudentNumber: number;
-  StartDate: Date | null;
-  EndDate: Date | null;
-}
+
 
 const classColumns: GridColDef[] = [
-  { field: 'ClassID', headerName: 'ClassID', width: 130 },
+  { field: 'ClassID', headerName: 'ClassID', flex: 1.2 },
   {
     field: 'ClassName',
     headerName: 'Class Name',
     type: 'string',
-    width: 150,
+    flex: 1,
     renderCell: (params) => (
-      <Link to={`/classmanagement/${params.row.ClassID}`} 
+      <Link to={`/admin/classmanagement/${params.row.ClassID}`} 
         style={{ 
           textDecoration: 'none', 
           color: '#0035ffd1', 
@@ -44,66 +37,49 @@ const classColumns: GridColDef[] = [
       </Link>
     ),
   },
-  { field: 'Course', headerName: 'Course', width: 130 },
-  { field: 'TeacherID', headerName: 'Teacher', width: 130 },
+  { field: 'Course', headerName: 'Course', flex: 1 },
+  { field: 'Teacher', headerName: 'Teacher', flex: 1 },
   {
     field: 'StudentNumber',
     headerName: 'Student number',
     type: 'number',
     description: 'This column has a value getter and is not sortable.',
     sortable: false,
-    width: 130,
+    flex: 0.8,
   },
   {
     field: 'StartDate',
     headerName: 'Start Date',
     type: 'date',
-    width: 130,
+    flex: 1,
   },
   {
     field: 'EndDate',
     headerName: 'End Date',
     type: 'date',
-    width: 130,
+    flex: 1,
   }
 ];
 
 const paginationModel = { page: 0, pageSize: 5 };
 
+export type ClassTable = {
+  ClassID: string;
+  Course: string;
+  Teacher: string;
+  ClassName: string;
+  StudentNumber: number;
+  StartDate: Date | null;
+  EndDate: Date | null;
+}
 
-export const ClassTable = () => {
-  const context = React.useContext(SMContext);
-  const [rows, setRows] = React.useState<ClassTable[]>([]);
-  const useEffect = React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await context?.CourseStore.getAll();
-        const courseMap = new Map(
-          context?.CourseStore.courses.map((course) => [course.CourseID, course.CourseName])
-        );
+type ClassTableProps = {
+  rows: ClassTable[];
+  columns?: GridColDef[];
+  onSelectionModelChange?: (newSelection: GridRowSelectionModel) => void;
+}
 
-        await context?.TeacherStore.getAll();
-        const teacherMap = new Map(
-          context?.TeacherStore.teachers.map((teacher) => [teacher.TeacherID, teacher.FullName])
-        );
-
-        await context?.ClassStore.getAll();
-        const fetchedRows = context?.ClassStore.classes.map((item) => ({
-            ClassID: item.ClassID,
-            Course : courseMap.get(item.CourseID) || "Unknown",
-            TeacherID: teacherMap.get(item.TeacherID) || "Unknown",
-            ClassName: item.ClassName,
-            StudentNumber: item.StudentNumber,
-            StartDate: new Date(item.StartDate || ''), 
-            EndDate: new Date(item.EndDate || ''),
-        }));
-        setRows(fetchedRows || []); // Cập nhật state rows
-      } catch (error) {
-          console.error("Failed to fetch classes:", error);
-      }
-    };
-  fetchData();
-  },[context?.ClassStore.classes.length])
+export const ClassTable = ({rows, columns, onSelectionModelChange}: ClassTableProps) => {
     return (
         <>
             <Paper sx={{ height: 400, width: '90%', margin: 'auto' }}>
@@ -114,6 +90,7 @@ export const ClassTable = () => {
                 initialState={{ pagination: { paginationModel } }}
                 pageSizeOptions={[5, 10]}
                 checkboxSelection
+                onRowSelectionModelChange={onSelectionModelChange}
                 sx={{ border: 0 }}
             />
             </Paper>
@@ -127,106 +104,41 @@ const  handleButtonClick = async (row: Student) => {
 }
 
 
-const studentColumn: GridColDef[] = [
-  { field: 'StudentID', headerName: 'StudentID', width: 130 },
-  {
-    field: 'FullName',
-    headerName: 'FullName',
-    type: 'string',
-    width: 150,
-    renderCell: (params) => (
-      <Link to={`/class/${params.row.ClassID}`} 
-        style={{ 
-          textDecoration: 'none', 
-          color: '#0035ffd1', 
-          fontWeight: 'bold',
-          
-        }}>
-        {params.value}
-      </Link>
-    ),
-  },
-  { field: 'DateOfBirth', headerName: 'DateOfBirth', type: 'date', width: 130 },
-  { field: 'Email', headerName: 'Email', width: 170 },
-  {
-    field: 'PhoneNumber',
-    headerName: 'PhoneNumber',
-    type: 'string',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 110,
-  },
-  {
-    field: 'Address',
-    headerName: 'Start Date',
-    type: 'string',
-    width: 150,
-  },
-  {
-    field: 'Actions', // Tên cột
-    headerName: 'Generate Account',
-    width: 150,
-    renderCell: (params) => (
-      <Box>
-        <StudentTableAction 
-          onClick={() => handleButtonClick(params.row)}
-        >
-          Generate Account
-        </StudentTableAction>
-      </Box>
-    ),
-  },
-];
 
 
-export const StudentTable = () => {
-  const context = React.useContext(SMContext);
-  const [rows, setRows] = React.useState<Student[]>([]);
-  const useEffect = React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-          await context?.StudentStore.getAll();
-          const fetchedRows = context?.StudentStore.student.map((item) => ({
-              StudentID: item.StudentID,
-              FullName: item.FullName,
-              DateOfBirth: new Date(item.DateOfBirth || ''), 
-              Email: item.Email,
-              PhoneNumber: item.PhoneNumber,
-              Address: item.Address,
-              AccountID: item.AccountID,
-          }));
-          setRows(fetchedRows || []); // Cập nhật state rows
-        } catch (error) {
-            console.error("Failed to fetch classes:", error);
-        }
-    };
-  fetchData();
-  },[context?.StudentStore.student.length])
+type StudentTableProps = {
+  rows: Student[];
+  columns?: GridColDef[];
+  onSelectionModelChange?: (newSelection: GridRowSelectionModel) => void;
+}
+
+export const StudentTable = observer(({rows, columns, onSelectionModelChange}: StudentTableProps) => {
     return (
         <>
             <Paper sx={{ height: 400, width: '90%', margin: 'auto' }}>
             <DataGrid
                 rows={rows}
                 getRowId={(row) => row.StudentID}
-                columns={studentColumn}
+                columns={columns || []}
                 initialState={{ pagination: { paginationModel } }}
                 pageSizeOptions={[5, 10]}
                 checkboxSelection
                 sx={{ border: 0 }}
+                onRowSelectionModelChange={onSelectionModelChange}
             />
             </Paper>
         </>
     )
-}
+})
 
 const AccountColumn: GridColDef[] = [
-  {field: 'Name', headerName: 'Name', width: 400},
-  {field: 'Username', headerName: 'Username', width: 250},
-  {field: 'Create At', headerName: 'Create At', width: 200, type: 'date'},
+  {field: 'Name', headerName: 'Name', flex: 2},
+  {field: 'Username', headerName: 'Username', flex: 2},
+  {field: 'Create At', headerName: 'Create At', flex: 1, type: 'date'},
   {
     field: 'Actions', // Tên cột
     headerName: '',
-    width: 150,
+    flex: 1,
     renderCell: (params) => (
       <AccountTableAction 
         onClick={() => handleButtonClick(params.row)}
@@ -237,55 +149,17 @@ const AccountColumn: GridColDef[] = [
   },
 ];
 
-type AccountTableProps = {
-  type: 'student' | 'teacher'
+export type AccountTableProps = {
+  rows: AccountTable[];
 }
 
-type AccountTable = {
+export type AccountTable = {
   Name: string;
   Username: string;
   CreateAt: Date | null;
 }
 
-export const AccountTable = ({type}: AccountTableProps) => {
-  const context = React.useContext(SMContext);
-  const [rows, setRows] = React.useState<AccountTable[]>([]);
-  const useEffect = React.useEffect(() => {
-  const fetchData = async () => {
-    try {
-        if(type === 'teacher') {
-          await context?.AccountStore.getTeacherAccount();
-          console.log(context?.AccountStore.account);
-          await context?.TeacherStore.getAll();
-          const teacherMap = new Map(
-            context?.TeacherStore.teachers.map((teacher) => [teacher.AccountID, teacher.FullName])
-          );
-          const fetchedRows = context?.AccountStore.account.map((item) => ({
-            Name: teacherMap.get(item.AccountID) || "Unknown",
-            Username: item.Username,
-            CreateAt: new Date(item.CreatedAt || ''),
-          }));
-          setRows(fetchedRows || []);
-        }else {
-          await context?.AccountStore.getStudentAccount();
-          console.log(context?.AccountStore.account);
-          await context?.StudentStore.getAll();
-          const studentMap = new Map(
-            context?.StudentStore.student.map((student) => [student.AccountID, student.FullName])
-          );
-          const fetchedRows = context?.AccountStore.account.map((item) => ({
-            Name: studentMap.get(item.AccountID) || "Unknown",
-            Username: item.Username,
-            CreateAt: new Date(item.CreatedAt || ''),
-          }));
-          setRows(fetchedRows || []);
-        }
-      } catch (error) {
-          console.error("Failed to fetch classes:", error);
-      }
-  };
-fetchData();
-},[context?.StudentStore.student.length])
+export const AccountTable = observer(({rows}: AccountTableProps) => {
   return (
       <>
           <Paper sx={{ height: 400, width: '90%', margin: 'auto' }}>
@@ -301,7 +175,7 @@ fetchData();
           </Paper>
       </>
   )
-}
+})
 
 const HandleApproved = async (
   row: ApplicationTable,
@@ -312,7 +186,7 @@ const HandleApproved = async (
   const applicationID = row.ApplicationID.trim();
   console.log("ApplicationID+", applicationID);
   const modifiedDate = new Date();
-  const statusID = 3; // Approved
+  const statusID = 3;
   const remarks = "Approved";
   try {
     const newRow = await ApplicationStore.updateApplication(applicationID, statusID, remarks);
@@ -356,7 +230,7 @@ const HandleReject = async (
 }
 
 
-type ApplicationTable = {
+export type ApplicationTable = {
   ApplicationID: string;
   Status: string;
   StudentName: string;
@@ -364,29 +238,31 @@ type ApplicationTable = {
   ModifiedDate: Date | null;
 }
 
-export const ApplicationTable = observer(() => {
-  const [display, setDisplay] = React.useState(true);
-  const { classID } = useParams<{ classID: string }>();
-  const context = React.useContext(SMContext);
-  const [rows, setRows] = React.useState<ApplicationTable[]>([]);
+export type ApplicationTableProps = {
+  rows: ApplicationTable[];
+  setRows: React.Dispatch<React.SetStateAction<ApplicationTable[]>>;
+  setDisplay: React.Dispatch<React.SetStateAction<boolean>>;
+  onSelectionModelChange?: (newSelection: GridRowSelectionModel) => void;
+}
+
+export const ApplicationTable = observer(({rows, setRows, setDisplay, onSelectionModelChange}: ApplicationTableProps) => {
   //column
   const ApplicationColumn: GridColDef[] = [
-    { field: 'empty', headerName: '', width: 50, minWidth: 10, maxWidth: 10, sortable: false, filterable: false },
-    {field: 'ApplicationID', headerName: 'ApplicationID', width: 160},
-    {field: 'StudentName', headerName: 'Student Name', width: 150},
-    {field: 'Status', headerName: 'Status', width: 130},
-    {field: 'ApplicationDate', headerName: 'Application Date', width: 130, type: 'date'},
-    {field: 'ModifiedDate', headerName: 'Modified Date', width: 130, type: 'date'},
+    {field: 'ApplicationID', headerName: 'ApplicationID', flex: 1},
+    {field: 'StudentName', headerName: 'Student Name', flex: 1},
+    {field: 'Status', headerName: 'Status', flex: 1},
+    {field: 'ApplicationDate', headerName: 'Application Date', flex: 1, type: 'date'},
+    {field: 'ModifiedDate', headerName: 'Modified Date', flex: 1, type: 'date'},
     {
       field: 'Actions', // Tên cột
       headerName: '',
-      width: 150,
+      flex: 1,
       renderCell: (params) => (
-        <Box sx={{alignItems: 'center',justifyContent: 'center', display: 'flex', gap: '10px', width: '100%',height: '100%'}}>
+        <Box sx={{alignItems: 'center',justifyContent: 'center', display: 'flex', gap: '5px', width: '100%',height: '100%'}}>
           <AccountTableAction 
             onClick={() => HandleApproved(params.row, setRows, setDisplay)}
             sx={{
-              fontSize: '10px', backgroundColor: '#1976d2', color: '#fff',
+              fontSize: '8px', backgroundColor: '#1976d2', color: '#fff',
               display: params.row.Status === "Pending" ? 'block' : 'none',
             }}
           >
@@ -395,11 +271,11 @@ export const ApplicationTable = observer(() => {
           <AccountTableAction 
             onClick={() => HandleReject(params.row, setRows, setDisplay)}
             sx={{
-              fontSize: '10px', backgroundColor: '#ff0000', color: '#fff', 
+              fontSize: '8px', backgroundColor: '#ff0000', color: '#fff', 
               display: params.row.Status === "Pending" ? 'block' : 'none',
             }}
           >
-            Reject
+            Rejected
           </AccountTableAction>
           <Box 
             sx={{
@@ -420,39 +296,9 @@ export const ApplicationTable = observer(() => {
       ),
     },
   ];
-
-  const useEffect = React.useEffect(() => {
-  const fetchData = async () => {
-    try {
-      await context?.ApplicationStore.getAllApplication(classID || '');
-      await context?.StudentStore.getAll();
-      await context?.StatusStore.getAllStatus();
-      const statusMap = new Map(
-        context?.StatusStore.status.map((status) => [status.StatusID, status.Status])
-      );
-
-      const studentMap = new Map(
-        context?.StudentStore.student.map((student) => [student.StudentID, student.FullName])
-      );
-      const fetchedRows = context?.ApplicationStore.applications.map((item) => (
-        {
-          ApplicationID: item.ApplicationID,
-          StudentName: studentMap.get(item.StudentID)?.trim() || "Unknown",
-          Status: statusMap.get(Number(item.StatusID)) || "",
-          ApplicationDate: new Date(item.ApplicationDate || ''),
-          ModifiedDate: new Date(item.ModifiedDate || ''),
-        }
-    ));
-      setRows(fetchedRows || []);
-      } catch (error) {
-          console.error("Failed to fetch classes:", error);
-      }
-  };
-  fetchData();
-},[context?.ApplicationStore.applications.length])
   return (
       <>
-          <Paper sx={{ height: 480, width: '95%', margin: 'auto', marginTop: '20px' }}>
+          <Paper sx={{ height: 400, width: '98%', margin: 'auto', marginTop: '10px' }}>
           <DataGrid
               rows={rows}
               getRowId={(row) => row.ApplicationID}
@@ -460,6 +306,41 @@ export const ApplicationTable = observer(() => {
               initialState={{ pagination: { paginationModel } }}
               pageSizeOptions={[5, 10]}
               disableColumnResize={false}
+              onRowSelectionModelChange={onSelectionModelChange}
+              checkboxSelection
+              sx={{ border: 0 }}
+          />
+          </Paper>
+      </>
+  )
+})
+
+type TeacherTableProps = {
+  rows: Teacher[];
+  columns?: GridColDef[];
+  onSelectionModelChange?: (newSelection: GridRowSelectionModel) => void;
+}
+
+export type TeacherTable = {
+  TeacherID: string;
+  FullName: string;
+  Email: string;
+  PhoneNumber: string;
+  Introduction: string;
+}
+
+export const TeacherTable = observer(({rows, columns, onSelectionModelChange}: TeacherTableProps) => {
+  return (
+      <>
+          <Paper sx={{ height: 400, width: '90%', margin: 'auto' }}>
+          <DataGrid
+              rows={rows}
+              getRowId={(row) => row.TeacherID}
+              columns={columns || []}
+              initialState={{ pagination: { paginationModel } }}
+              pageSizeOptions={[5, 10]}
+              checkboxSelection
+              onRowSelectionModelChange={onSelectionModelChange}
               sx={{ border: 0 }}
           />
           </Paper>

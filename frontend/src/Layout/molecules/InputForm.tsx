@@ -6,13 +6,14 @@ import { Icon } from '../atoms/icon';
 import { SMContext } from '../../context/context';
 import { Account } from '../../data/AccountStore';
 import { Course } from '../../data/CourseStore';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { Teacher } from '../../data/TeacherStore';
 
 type TextFieldItemProps = {
   title?: string;
   placeholder?: string;
   children?: React.ReactNode;
+  value?: string | number | Date | null;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -28,7 +29,7 @@ const InputTitle = styled('p')({
   marginBottom: '5px',
 })
 
-export default function TextFieldItem({title, placeholder, children, onChange}: TextFieldItemProps) {
+export default function TextFieldItem({title, placeholder, value, onChange}: TextFieldItemProps) {
   return (
     <>
       <InputBox>
@@ -36,6 +37,7 @@ export default function TextFieldItem({title, placeholder, children, onChange}: 
         >{title}</InputTitle>
         <TextField 
           placeholder={placeholder}
+          value={value}
           onChange={onChange}
           variant="outlined"
           size="small"
@@ -64,10 +66,12 @@ type SelectItemProps = {
   title: string;
   onChange?: (event: SelectChangeEvent<string | number | Date>) => void;
   type: 'course' | 'teacher'
+  value?: string | number | Date ;
 };
 
-export const SelectItem = ({title, onChange, type}: SelectItemProps) => {
-  const [listMenuItem, setListMenuItem] = React.useState<Course[] | Teacher[]>();
+export const SelectItem = ({title, onChange, type, value}: SelectItemProps) => {
+  const [listMenuItem, setListMenuItem] = React.useState<Course[] | Teacher[]>([]);
+  const [defaultValue, setDefaultValue] = React.useState<string | number | undefined>(undefined); 
   const context = React.useContext(SMContext);
     React.useEffect(() => {
       const fetchData = async () => {
@@ -92,7 +96,7 @@ export const SelectItem = ({title, onChange, type}: SelectItemProps) => {
         <InputTitle>{title}</InputTitle>
         <Select 
           sx={{ width: '100%' }} 
-          defaultValue={1} size="small"
+          value={value} size="small"
           onChange={onChange}
         >
             {listMenuItem?.map((item) => (
@@ -112,14 +116,16 @@ export const SelectItem = ({title, onChange, type}: SelectItemProps) => {
 type ClassDatePickerProps = {
   title: string;
   onChange?: (date: Date | null) => void; // Hàm callback để truyền giá trị ngày
+  defaultValue?: Date | null; // Giá trị mặc định của DatePicker
 };
 
-export const ClassDatePicker = ({title, onChange}: ClassDatePickerProps) => {
+export const ClassDatePicker = ({title, onChange, defaultValue}: ClassDatePickerProps) => {
   return(
     <>
       <InputBox>
         <InputTitle>{title}</InputTitle>
         <DatePicker 
+          defaultValue={defaultValue ? dayjs(defaultValue) : null}
           slotProps={{ textField: { size: 'small'} }}
           sx={{width: '100%'}}
           onChange={(value: Dayjs | null) => onChange?.(value ? value.toDate() : null)}
@@ -130,24 +136,29 @@ export const ClassDatePicker = ({title, onChange}: ClassDatePickerProps) => {
 }
 
 type SearchBoxProps = {
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onInput?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick?: () => void
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
-export const SearchBox = () => {
+export const SearchBox = ({onClick, onChange, onKeyDown}: SearchBoxProps) => {
   return (
     <>
       <TextField
       id="search-bar"
       className="text"
-      onInput={(e) => {
-       
-      }}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
       variant="outlined"
       placeholder="Search..."
       size="small"
+      sx={{backgroundColor: 'white'}}
       />
-      <Icon name='search' sx={{cursor: 'pointer'}}></Icon>
-      </>
+      <Box
+        onClick={onClick}
+      >
+        <Icon  name='search' sx={{cursor: 'pointer'}}></Icon>
+      </Box>
+    </>
   )
 }

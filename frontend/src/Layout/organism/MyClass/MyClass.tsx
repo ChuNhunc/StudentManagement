@@ -1,46 +1,47 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useState } from "react"
 import { SMContext } from "../../../context/context"
-import { Box } from "@mui/material";
-import { ClassCard } from "../../molecules/ClassCard";
-import { Class } from "../../../data/ClassStore";
-import { SearchBox } from "../../molecules/InputForm";
-import { useNavigate } from "react-router-dom";
+import { Box } from "@mui/material"
+import { SearchBox } from "../../molecules/InputForm"
+import { ClassCard, MyClassCard } from "../../molecules/ClassCard"
+import { useNavigate } from "react-router-dom"
+import { Class } from "../../../data/ClassStore"
 
-export const AllClass = () => {
-    const context = useContext(SMContext)
+export const MyClass = () => {
     const navigate = useNavigate()
     const [classes, setClasses] = useState<Class[]>([]);
-    const [searchText, setSearchText] = useState<string>("");
-    const [orginalClasses, setOrginalClasses] = useState<Class[]>([]);
     const [courseMap, setCourseMap] = useState<Map<string, string>>(new Map());
+    const [statusMap, setStatusMap] = useState<Map<string, number>>(new Map())
+    const context = useContext(SMContext)
+    const studentID = context?.UserStore.getUserProfile()?.StudentID
     const useEffect = React.useEffect(() => {
-      const fetchData = async () => {
+        const fetchData = async () => {
         try {
             await context?.ClassStore.getAll();
             await context?.CourseStore.getAll();
+            await context?.ApplicationStore.getAllStudentApplication(studentID!)
 
             const courseMap = new Map(
                 context?.CourseStore.courses.map((course) => [course.CourseID, course.CourseName])
             );
-            setCourseMap(courseMap);
 
-            // Lưu danh sách lớp học vào state
-            setClasses(context?.ClassStore.classes || []);
-            setOrginalClasses(context?.ClassStore.classes || []);
+            const statusMap = new Map(
+                context?.ApplicationStore.applications.map((application) => [application.ClassID, Number(application.StatusID)])
+            )
+            setCourseMap(courseMap);
+            setStatusMap(statusMap)
+
+            if(studentID) {
+                // await context?.AttendanceStore.getAllClassByStudentId(studentID)
+                const listClass = await context.ApplicationStore.getAllStudentApplication(studentID)
+                console.log("list class:",listClass)
+                setClasses(listClass);
+            }
         } catch (error) {
             console.error("Failed to fetch classes:", error);
         }
-      };
-      fetchData();
+        };
+        fetchData();
     },[])
-
-    const handleSearch = () => {
-        const filteredRows = orginalClasses.filter((item) => {
-            return item.ClassName.toLowerCase().includes(searchText.toLowerCase())
-        })
-        setClasses(filteredRows || [])
-    }
-
     return (
         <>
             <Box sx={{padding:'20px'}}>
@@ -55,17 +56,7 @@ export const AllClass = () => {
                         }}
                         className='search-box'
                     >
-                        <SearchBox
-                            onChange={(e) => {
-                                setSearchText(e.target.value)
-                            }}
-                            onClick={handleSearch}
-                            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                if (e.key === 'Enter') {
-                                    handleSearch()
-                                }
-                            }}
-                        />
+                        <SearchBox/>
                     </Box>
                 </Box>
                 <Box sx={{
@@ -74,14 +65,15 @@ export const AllClass = () => {
                 }}>
                     {classes.map((classItem) => {
                         return (
-                            <ClassCard 
+                            <MyClassCard 
                                 onClick={() => {
-                                    navigate(`/student/allclass/${classItem.ClassID}`)
+                                    navigate(`/student/myclass/${classItem.ClassID}`)
                                 }}
                                 key={classItem.ClassID} 
                                 className={classItem.ClassName}
                                 courseName={courseMap.get(classItem.CourseID) || ""}
                                 studentNumber={classItem.StudentNumber}
+                                statusData = {statusMap.get(classItem.ClassID) || 0}
                             />
                         )
                     })}

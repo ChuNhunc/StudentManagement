@@ -37,8 +37,8 @@ class StudentStore {
         this.student.push(newStudent);
     }
 
-    async update(student: Student) {
-        await updateStudent(student);
+    async update(StudentID: string, student: Student) {
+        await updateStudent(StudentID, student);
         const index = this.student.findIndex(s => s.StudentID === student.StudentID);
         if (index !== -1) {
             this.student[index] = { ...this.student[index], ...student };

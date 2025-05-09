@@ -2,6 +2,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 import axios from "./axios"
 import { Student } from "../data/StudentStore";
+import { Teacher } from "../data/TeacherStore";
 
 const login = async (username: string, password: string) => {
     const response = await axios.post("auth/login", {
@@ -25,6 +26,8 @@ const register = async (username: string, password: string, roleid: number) => {
 
 const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    const response = axios.post("auth/logout", {});
 }
 
 const generateStudentAccount = async (student: Student) => {
@@ -38,4 +41,16 @@ const generateStudentAccount = async (student: Student) => {
     });
     return response.data;
 }
-export {login, register, logout, generateStudentAccount}
+
+const generateTeacherAccount = async (teacher: Teacher) => {
+    const TeacherID = teacher.TeacherID;
+    if (!teacher.TeacherID) {
+        throw new Error('TeacherID is required to generate an account.');
+    }
+
+    const response = await axios.post("auth/generateTeacherAccount", {
+        TeacherID,
+    });
+    return response.data;
+}
+export {login, register, logout, generateStudentAccount, generateTeacherAccount}

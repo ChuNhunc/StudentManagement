@@ -20,8 +20,8 @@ export const createStudent = async (student: any) => {
     return response.data
 }
 
-export const updateStudent = async (student: any) => {
-    const response = await axios.put("student/updateStudent", student)
+export const updateStudent = async (StudentID: string, student: any) => {
+    const response = await axios.put(`student/updateStudent/${StudentID}`, student)
     return response.data
 }
 
@@ -29,5 +29,7 @@ export const deleteStudent = async (studentId: string) => {
     const response = await axios.delete(`student/deleteStudent/${studentId}`)
     return response.data
 }
+
+
 
 

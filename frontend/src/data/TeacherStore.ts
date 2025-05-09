@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import { createTeacher, getAllTeachers, getTeacherByID, getTeacherByName, updateTeacher, deleteTeacher } from "../service/teacherService";
 export type Teacher = {
     TeacherID: string;
-    AccountID: number;
+    AccountID: number | null;
     FullName: string;
     Email: string;
     PhoneNumber: string;
@@ -35,8 +35,8 @@ class TeacherStore {
         this.teachers.push(newTeacher);
     }
 
-    async update(teacher: Teacher) {
-        await updateTeacher(teacher);
+    async update(TeacherID: string, teacher: Teacher) {
+        await updateTeacher(TeacherID, teacher);
         const index = this.teachers.findIndex(t => t.TeacherID === teacher.TeacherID);
         if (index !== -1) {
             this.teachers[index] = { ...this.teachers[index], ...teacher };

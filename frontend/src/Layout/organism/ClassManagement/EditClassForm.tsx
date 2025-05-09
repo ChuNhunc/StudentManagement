@@ -2,52 +2,60 @@ import { Box, Button, Select } from "@mui/material"
 import TextFieldItem, { ClassDatePicker, SelectItem } from "../../molecules/InputForm"
 import { FormButton } from "../../molecules/FormButton"
 import { useContext, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { SMContext } from "../../../context/context"
-import { ErrorText } from "../../atoms/Typography"
+import { ErrorText, StatusText } from "../../atoms/Typography"
+import { getAllStudentsInClass } from "../../../service/attendanceService"
 
-const generateClassID = async (courseID: string) => {
-    const datetime = new Date();
-    const year = String(datetime.getFullYear()).slice(-2); // Năm
-    const month = String(datetime.getMonth() + 1).padStart(2, "0");
-    const date = String(datetime.getDate()).padStart(2, "0");
-    const hours = String(datetime.getHours()).padStart(2, "0");
-    const minutes = String(datetime.getMinutes()).padStart(2, "0");
-    const seconds = String(datetime.getSeconds()).padStart(2, "0");
-  
-    // Ghép các thành phần thành chuỗi
-    const timestamp = `${year}${month}${date}${hours}${minutes}${seconds}`;
-  
-    // Tạo ClassID bằng cách kết hợp courseID và timestamp
-    const classID = `${courseID}_${timestamp}`;
-  
-    return classID;
-  };
-
-export const AddClassForm = () => {
+export const EditClassForm = () => {
     const navigate = useNavigate()
     const date = new Date()
+    const location = useLocation()
+    const state = location.state
     const nextDate = new Date(date.getTime() + 24 * 60 * 60 * 1000) 
     const context = useContext(SMContext)
     const [classNameError, setClassNameError] = useState(false)
     const [courseError, setCourseError] = useState(false)
     const [teacherError, setTeacherError] = useState(false)
     const [studentNumberError, setStudentNumberError] = useState(false)
-    const [className, setClassName] = useState<string>('')
-    const [course, setCourse] = useState<string>('')
-    const [teacher, setTeacher] = useState<string>('')
-    const [studentNumber, setStudentNumber] = useState<number>(0)
-    const [startDate, setStartDate] = useState<Date | null>(null)
-    const [endDate, setEndDate] = useState<Date | null>(null)
+    const [studentNumberValidate, setStudentNumberValidate] = useState(false)
+    const [className, setClassName] = useState<string>(state.ClassName)
+    const [course, setCourse] = useState<string>(state.CourseID)
+    const [teacher, setTeacher] = useState<string>(state.TeacherID)
+    const [studentNumber, setStudentNumber] = useState<number>(state.StudentNumber)
+    const [startDate, setStartDate] = useState<Date | null>(state.StartDate)
+    const [endDate, setEndDate] = useState<Date | null>(state.EndDate)
 
     const handleSaveButtonClick = async () => {
-        const newClassID = await generateClassID(course); 
         setClassNameError(false)
         setCourseError(false)
         setTeacherError(false)
         setStudentNumberError(false)
 
         let isValid = true
+
+        const classID = state.ClassID
+
+        try {
+            const listStudent = await getAllStudentsInClass(classID)
+            console.log(classID)
+            console.log(listStudent)
+
+            if(listStudent !== undefined) {
+                console.log(listStudent.length)
+                const students = listStudent.length
+                console.log(studentNumber)
+                console.log(students)
+                if(studentNumber < students) {
+                    setStudentNumberValidate(true)
+                    isValid = false
+                }
+            }
+        }catch (error) {
+            console.error("Failed to fetch classes:", error);
+            return;
+        }
+
         if (className.trim() === '') {
             setClassNameError(true)
             isValid = false
@@ -69,15 +77,18 @@ export const AddClassForm = () => {
             return;
         }
 
-        context?.ClassStore.createClass({
-            ClassID: newClassID,
-            ClassName: className,
-            CourseID: course,
-            TeacherID: teacher,
-            StudentNumber: studentNumber,
-            StartDate: startDate,
-            EndDate: endDate,
-        })
+        
+        if(classID) {
+            context?.ClassStore.updateClass(classID,{
+                ClassID: classID,
+                ClassName: className,
+                CourseID: course,
+                TeacherID: teacher,
+                StudentNumber: studentNumber,
+                StartDate: startDate,
+                EndDate: endDate,
+            })
+        }
         navigate(-1)
     }
 
@@ -92,7 +103,10 @@ export const AddClassForm = () => {
                 }}
             >
                 <Box>
-                    <TextFieldItem title="Class Name" placeholder="Enter class name" 
+                    <TextFieldItem 
+                        title="Class Name" 
+                        placeholder="Enter class name" 
+                        value={className}
                         onChange={(e) => {
                             setClassName(e.target.value)
                         }}
@@ -102,29 +116,33 @@ export const AddClassForm = () => {
                     </Box>
                 </Box>
                 <Box>
-                    <SelectItem title= 'Course' type="course" 
+                    <SelectItem 
+                        title= 'Course' 
+                        type="course"
+                        value={course}
                         onChange={(e) => {
                             setCourse(String(e.target.value))
                         }}/>
-                    <Box sx={{padding: '0 10px', display: courseError ? 'block' : 'none'}}>
-                        <ErrorText>Vui lòng chọn khóa học</ErrorText>
-                    </Box>
                 </Box>
                 <Box>
-                    <SelectItem title="Teacher" type="teacher" 
+                    <SelectItem 
+                        title="Teacher" 
+                        type="teacher" 
+                        value={teacher}
                         onChange={(e) => setTeacher(String(e.target.value))}/>
-                    <Box sx={{padding: '0 10px', display: teacherError ? 'block' : 'none'}}>
-                        <ErrorText>Vui lòng chọn giáo viên</ErrorText>
-                    </Box>
                 </Box>
                 <Box>
                     <TextFieldItem 
                         title="Student Number" 
                         placeholder="Enter student number" 
+                        value={studentNumber}
                         onChange={(e) => setStudentNumber(Number(e.target.value))} 
                     />
                     <Box sx={{padding: '0 10px', display: studentNumberError ? 'block' : 'none'}}>
                         <ErrorText>Số lượng học sinh không được để trống</ErrorText>
+                    </Box>
+                    <Box sx={{padding: '0 10px', display: studentNumberValidate ? 'block' : 'none'}}>
+                        <ErrorText>Không thể sửa số lượng học sinh nhỏ hơn số học sinh hiện có trong lớp</ErrorText>
                     </Box>
                 </Box>
                 <ClassDatePicker defaultValue={date} title="Start Date" onChange={(date) => setStartDate(date)}/>

@@ -3,10 +3,13 @@ import { useContext, useState } from 'react';
 import { login } from '../../service/authService';
 import { useNavigate } from 'react-router-dom';
 import { SMContext } from '../../context/context';
+import { ErrorText } from '../atoms/Typography';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [blankError, setBlankError] = useState(false);
+  const [loginError, setLoginError] = useState(false);
   const navigate = useNavigate();
   const context = useContext(SMContext);
 
@@ -17,16 +20,30 @@ const Login = () => {
       setPassword(event.target.value);
   }
   async function handleLogin() {
+    setBlankError(false);
+    setLoginError(false);
+    if(username === '' || password === '') {
+      setBlankError(true);
+      return;
+    }
     try {
-      console.log(username, password);
       const roleID = await login(username, password);
       if (roleID === 1) {
-        navigate('/student', { state: { roleID } }); 
+        const student = await context?.StudentStore.getById(username);
+        console.log(student);
+        context?.UserStore.saveUsserProfile(student);
+        console.log(JSON.stringify(context?.UserStore.user))
+        navigate('/student'); 
       }else if (roleID === 3) {
-        navigate('/admin', { state: { roleID } }); 
+        navigate('/admin'); 
       }
     } catch (err: any) {
-      alert(err.response?.data?.message);
+      console.log(err);
+      if (err.response && err.response.data) {
+        setLoginError(true); 
+    } else {
+        console.log("Unexpected error:", err);
+    }
     }
   }
   return (
@@ -60,6 +77,16 @@ const Login = () => {
           value={password}
           onChange={handlePassChange}
         />
+        <Box 
+          className='auth-error'
+          sx={{ width: '100%', display: loginError ? 'flex' : 'none', justifyContent: 'flex-start' }}>
+          <ErrorText sx={{}}>Tên người dùng hoặc mật khẩu không đúng</ErrorText>
+        </Box>
+        <Box 
+          className='blank-error'
+          sx={{ width: '100%', display: blankError ? 'flex' : 'none', justifyContent: 'flex-start' }}>
+          <ErrorText sx={{}}>Tên người dùng và mật khẩu không được để trống</ErrorText>
+        </Box>
         <Button
           variant="contained"
           color="primary"

@@ -34,6 +34,8 @@ export const ClassDetailSideBar = () => {
                     height: 'calc(100vh - 70px)',
                     backgroundColor: 'white',
                     paddingTop: '50px',
+                    paddingLeft: '20px',
+                    position: 'fixed',
                 }}
             >
                 {classDetailSideBarItems.map((item, index) => {

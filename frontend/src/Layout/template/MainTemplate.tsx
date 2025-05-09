@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { Header } from "../organism/Header";
 import { AdminNavBar, StudentNavBar } from "../organism/NavBar";
+import { StatusText } from "../atoms/Typography";
 
 type MainTemplateProps = {
     children: React.ReactNode;
@@ -9,7 +10,8 @@ type MainTemplateProps = {
 
 export const AdminTemplate = ({ children}: MainTemplateProps) => {
     const location = useLocation();
-    const { roleID } = location.state || {}
+    const state = location.state;
+    console.log(state)
     return (
         <Box>
             <Box
@@ -25,7 +27,7 @@ export const AdminTemplate = ({ children}: MainTemplateProps) => {
                     float: 'right',
                 }}
             >
-                <Header/>
+                <Header headerText={state}/>
                 {children}
             </Box>
         </Box>
@@ -34,7 +36,7 @@ export const AdminTemplate = ({ children}: MainTemplateProps) => {
 
 export const StudentTemplate = ({ children}: MainTemplateProps) => {
     const location = useLocation();
-    const { roleID } = location.state || {}
+    const state = location.state;
     return (
         <Box>
             <Box
@@ -50,7 +52,7 @@ export const StudentTemplate = ({ children}: MainTemplateProps) => {
                     float: 'right',
                 }}
             >
-                <Header/>
+                <Header headerText={state}/>
                 {children}
             </Box>
         </Box>

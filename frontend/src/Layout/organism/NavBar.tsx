@@ -26,13 +26,13 @@ const listNavForTeacher: NavItemProps[] = [
 const listNavForAdmin: NavItemProps[] = [
   { title: "Account Management", icon: "account-management", route: "accountmanagement" },
   { title: "Student Management", icon: "student-management", route: "studentmanagement" },
+  { title: "Teacher Management", icon: "student-management", route: "teachermanagement" },
   { title: "Class Management", icon: "class-management", route: "classmanagement" },
 ];
 
 export const AdminNavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
  
   return (
     <>
@@ -46,6 +46,7 @@ export const AdminNavBar = () => {
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
+          position: 'fixed',
         }}
       >
         <Box className='logo'>
@@ -57,7 +58,7 @@ export const AdminNavBar = () => {
               <NavItem 
                 title={item.title} icon={item.icon} key={index}
                 onClick={() => {
-                  navigate(item.route || '/homepage')
+                  navigate(item.route || '/homepage', {state: item.title})
                 }}
               ></NavItem>
             </>
@@ -83,6 +84,7 @@ export const StudentNavBar = () => {
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
+          position: 'fixed',
         }}
       >
         <Box className='logo'>
@@ -94,7 +96,7 @@ export const StudentNavBar = () => {
               <NavItem 
                 title={item.title} icon={item.icon} key={index}
                 onClick={() => {
-                  navigate(item.route || '/student')
+                  navigate(item.route || '/student', {state: item.title})
                 }}
               ></NavItem>
             </>

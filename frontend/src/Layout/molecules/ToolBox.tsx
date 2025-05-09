@@ -1,13 +1,17 @@
-import { Box, Button } from "@mui/material"
+import { Box, Button, TextField } from "@mui/material"
 import TextFieldItem, { SearchBox } from "./InputForm"
 import { CreateButton } from "../atoms/button"
 import { useNavigate } from "react-router-dom"
+import { Icon } from "../atoms/icon"
 
 type ToolBoxProps = {
     route: string
+    onClick?: () => void
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+    onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
-export const ToolBox = ({route}: ToolBoxProps) => {
+export const ToolBox = ({route, onClick, onChange, onKeyDown}: ToolBoxProps) => {
     const navigate = useNavigate()
     return (
         <>
@@ -37,7 +41,22 @@ export const ToolBox = ({route}: ToolBoxProps) => {
                         marginRight: '30px',
                     }}
                 >
-                    <SearchBox/>
+                    <>
+                          <TextField
+                            id="search-bar"
+                            className="text"
+                            onChange={onChange}
+                            onKeyDown={onKeyDown}
+                            variant="outlined"
+                            placeholder="Search..."
+                            size="small"
+                          />
+                          <Box
+                            onClick={onClick}
+                          >
+                            <Icon name='search' sx={{cursor: 'pointer'}}></Icon>
+                        </Box>
+                        </>
                 </Box>
             </Box>
         </>

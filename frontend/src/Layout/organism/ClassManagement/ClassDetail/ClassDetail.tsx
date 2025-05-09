@@ -16,9 +16,9 @@ export const ClassDetail = () => {
                 <ClassDetailSideBar/>
                 <Box 
                     sx={{
-                        width: '80%',
-                        height: 'calc(100vh - 70px)',
-                        float: 'left',
+                        width: '78%',
+                        height: '100%',
+                        float: 'right',
                     }}>
                     <Outlet/>
                 </Box>

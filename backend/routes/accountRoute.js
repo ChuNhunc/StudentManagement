@@ -7,4 +7,5 @@ accountRoute.get("/getAllStudentAccount", accountController.getAllStudentAccount
 accountRoute.get("/getAllTeacherAccount", accountController.getAllTeacherAccount);
 accountRoute.get("/getAllAdminAccount", accountController.getAllAdminAccount);
 
+
 module.exports = accountRoute;

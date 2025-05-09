@@ -1,6 +1,7 @@
 import { Box } from "@mui/material"
 import { StudentClassDetailSideBar } from "./StudentClassDetailSideBar"
 import { Outlet } from "react-router-dom"
+import { GeneralInformation } from "../ClassManagement/ClassDetail/GeneralInformation"
 
 export const StudentClassDetail = () => {
     return (
@@ -10,17 +11,18 @@ export const StudentClassDetail = () => {
                     backgroundColor: '#f0f0f0',
                     display: 'inline-block',
                     width: '100%',
-                    height: '100%'
+                    height: '100%',
+                    position: 'relative',
                 }}
             >
                 <StudentClassDetailSideBar/>
                 <Box 
                     sx={{
-                        width: '80%',
-                        height: 'calc(100vh - 70px)',
-                        float: 'left',
+                        width: '78%',
+                        minHeight: '100vh',
+                        float: 'right',
                     }}>
-                    <Outlet/>
+                    <GeneralInformation/>
                 </Box>
             </Box>
         </>

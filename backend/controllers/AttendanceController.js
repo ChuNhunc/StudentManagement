@@ -8,11 +8,9 @@ const getAllStudentInClass = async (req, res) => {
     const students = await Attendance.findAll({
       where: { ClassID: classID },
     });
-    if (!students || students.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "Không có học sinh nào trong lớp" });
-    }
+    // if (!students || students.length === 0) {
+    //   return null;
+    // }
     res.json(students);
   } catch (err) {
     console.log(err);
@@ -20,9 +18,8 @@ const getAllStudentInClass = async (req, res) => {
   }
 };
 
-const generateAttendanceID = async (classID, studentID) => {
-  const attendanceID = `${classID}_${studentID}_${timestamp}`;
-
+const generateAttendanceID = async (classID, studentID) => { 
+  const attendanceID = `${classID}_${studentID}`
   return attendanceID;
 };
 const AddStudentToClass = async (req, res) => {
@@ -92,4 +89,4 @@ const getAllClassesByTeacherID = async (req, res) => {
   }
 }
 
-module.exports = { getAllStudentInClass, AddStudentToClass, deleteStudentFromClass, getAllClassesByStudentID, getAllClassesByTeacherID };
+module.exports = { getAllStudentInClass, AddStudentToClass, deleteStudentFromClass, getAllClassesByStudentID, getAllClassesByTeacherID, generateAttendanceID };

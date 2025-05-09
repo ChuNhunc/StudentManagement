@@ -22,6 +22,7 @@ class LessonStore {
 
     async getAllLessonInCourse(courseId: string) {
         this.lessons = await getAllLessonInCourse(courseId);
+        return this.lessons;
     }
 }
 

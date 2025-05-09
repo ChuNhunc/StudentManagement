@@ -2,40 +2,25 @@ import { Box, Button } from "@mui/material";
 import TextFieldItem, { ClassDatePicker, SelectItem } from "../../molecules/InputForm";
 import { useContext, useState } from "react";
 import { SMContext } from "../../../context/context";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ErrorText } from "../../atoms/Typography";
 
-const GenerateStudentID = async () => {
-    const datetime = new Date();
-    const year = String(datetime.getFullYear()).slice(-2); // Năm
-    const month = String(datetime.getMonth() + 1).padStart(2, "0");
-    const date = String(datetime.getDate()).padStart(2, "0");
-    const hours = String(datetime.getHours()).padStart(2, "0");
-    const minutes = String(datetime.getMinutes()).padStart(2, "0");
-    const seconds = String(datetime.getSeconds()).padStart(2, "0");
-  
-    // Ghép các thành phần thành chuỗi
-    const timestamp = `${year}${month}${date}${hours}${minutes}${seconds}`;
-  
-    const studentID = `S_${timestamp}`;
-    return studentID;
-  };
-
-export const AddStudentForm = () => {
+export const EditStudentForm = () => {
     const context = useContext(SMContext);
+    const location = useLocation();
+    const state = location.state
+    console.log(state)
     const navigate = useNavigate();
-    const [FullName, setFullName] = useState('');
-    const [Email, setEmail] = useState('');
-    const [PhoneNumber, setPhoneNumber] = useState('');
-    const [Address, setAddress] = useState('');
-    const [DateOfBirth, setDateOfBirth] = useState<Date | null>(null);
+    const [FullName, setFullName] = useState(state.FullName);
+    const [Email, setEmail] = useState(state.Email);
+    const [PhoneNumber, setPhoneNumber] = useState(state.PhoneNumber);
+    const [Address, setAddress] = useState(state.Address);
+    const [DateOfBirth, setDateOfBirth] = useState<Date | null>(state.DateOfBirth ? new Date(state.DateOfBirth) : null);
     const [FullNameError, setFullNameError] = useState(false);
     const [EmailError, setEmailError] = useState(false);
+    const [AccountID, setAccountID] = useState<number|null>(state.AccountID);
     const [PhoneNumberError, setPhoneNumberError] = useState(false);
 
-    const handleError = {
-        
-    }
 
     const handleCreateStudent = async () => {
         setFullNameError(false);
@@ -64,33 +49,38 @@ export const AddStudentForm = () => {
             return;
         }
 
-        const newStudentID = await GenerateStudentID(); 
-        context?.StudentStore.create({
-            StudentID: newStudentID,
-            FullName: FullName,
-            DateOfBirth: DateOfBirth,
-            Email: Email,
-            PhoneNumber: PhoneNumber,
-            Address: Address,
-            AccountID: null,
-        })
+        const studentID = state.StudentID
+        if(studentID) {
+            context?.StudentStore.update(studentID, {
+                StudentID: studentID.trim(),
+                FullName: FullName.trim(),
+                DateOfBirth: DateOfBirth,
+                Email: Email.trim(),
+                PhoneNumber: PhoneNumber.trim(),
+                Address: Address.trim(),
+                AccountID: AccountID,
+            })
+        }
         navigate(-1)
     }
 
     return (
         <>
-             <Box className="add-class-form"
-                sx={{
-                    display: 'grid', // Sử dụng Grid
-                    gridTemplateColumns: 'repeat(2, 1fr)',
-                    padding: '20px 20px 0 20px',
-                }}
+            <Box className="add-class-form"
+            sx={{
+                display: 'grid', // Sử dụng Grid
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                padding: '20px 20px 0 20px',
+            }}
             >
                 <Box>
-                    <TextFieldItem title="Full Name" placeholder="Enter student name" 
+                    <TextFieldItem 
+                        title="Full Name" 
+                        placeholder="Enter student name" 
+                        value={FullName}
                         onChange={(e) => setFullName(e.target.value)}
                     ></TextFieldItem>
-                     <Box 
+                        <Box 
                         className ='fullname-error'
                         sx={{padding: '0 10px', display: FullNameError ? 'block' : 'none'}}>
                         <ErrorText>Tên học sinh không được để trống</ErrorText>
@@ -100,10 +90,14 @@ export const AddStudentForm = () => {
                 <Box>
                     <ClassDatePicker title="Date of Birth" 
                         onChange={(date) => setDateOfBirth(date)}
+                        defaultValue={DateOfBirth}
                     />
                 </Box>
                 <Box>
-                    <TextFieldItem title="Email" placeholder="Enter student email" 
+                    <TextFieldItem 
+                        title="Email" 
+                        placeholder="Enter student email" 
+                        value={Email}
                         onChange={(e) => setEmail(e.target.value)}
                     ></TextFieldItem>
                     <Box 
@@ -113,7 +107,10 @@ export const AddStudentForm = () => {
                     </Box>
                 </Box>
                 <Box>
-                    <TextFieldItem title="PhoneNumber" placeholder="Enter student phone number" 
+                    <TextFieldItem 
+                        title="PhoneNumber" 
+                        placeholder="Enter student phone number" 
+                        value={PhoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                     ></TextFieldItem>
                     <Box 
@@ -123,7 +120,10 @@ export const AddStudentForm = () => {
                     </Box>
                 </Box>
                 <Box>
-                    <TextFieldItem title="Address" placeholder="Enter student address" 
+                    <TextFieldItem 
+                        title="Address" 
+                        placeholder="Enter student address" 
+                        value={Address}
                         onChange={(e) => setAddress(e.target.value)}
                     />
                 </Box>

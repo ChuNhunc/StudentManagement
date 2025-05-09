@@ -1,7 +1,8 @@
 import axios from "./axios"
 
-export const getAllStudentsInClass = async (classId: string) => {
-    const response = await axios.get(`attendance/getAllStudentsInClass/${classId}`)
+export const getAllStudentsInClass = async (ClassId: string) => {
+    const response = await axios.get(`attendance/getAllStudentsInClass/${ClassId}`)
+    console.log(response.data)
     return response.data
 }
 

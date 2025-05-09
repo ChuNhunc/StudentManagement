@@ -8,4 +8,5 @@ attendanceDetailRoute.get(
     attendanceDetailController.getAllAttendanceDetails
 );
 
+
 module.exports = attendanceDetailRoute;

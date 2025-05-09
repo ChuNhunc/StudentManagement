@@ -4,7 +4,7 @@ const attendanceController = require("../controllers/AttendanceController.js");
 const attendanceRoute = express.Router();
 
 attendanceRoute.get(
-  "/getAllStudentInClass/:ClassID",
+  "/getAllStudentsInClass/:ClassID",
   attendanceController.getAllStudentInClass
 );
 attendanceRoute.post(

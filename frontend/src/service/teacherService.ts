@@ -23,8 +23,8 @@ export const createTeacher = async (teacher: Teacher) => {
     return response.data
 }
 
-export const updateTeacher = async (teacher: Teacher) => {
-    const response = await axios.put("teacher/updateTeacher", teacher)
+export const updateTeacher = async (TeacherID: string, teacher: Teacher) => {
+    const response = await axios.put(`teacher/updateTeacher/${TeacherID}`, teacher)
     return response.data
 }
 

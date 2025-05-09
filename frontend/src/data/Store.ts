@@ -9,6 +9,7 @@ import ScheduleStore from "./ScheduleStore";
 import LessonStore from "./LessonStore";
 import ApplicationStore from "./ApplicationStore";
 import StatusStore from "./StatusStore";
+import UserStore from "./UserStore";
 
 class Store {
     AccountStore = AccountStore;
@@ -21,6 +22,7 @@ class Store {
     LessonStore = LessonStore;
     ApplicationStore = ApplicationStore;
     StatusStore = StatusStore;
+    UserStore = UserStore;
 
     constructor() {
         makeAutoObservable(this)

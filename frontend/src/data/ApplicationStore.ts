@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
-import { getAllApplicationInClass, createApplication, updateApplication } from "../service/applicationService";
+import { getAllApplicationInClass, createApplication, updateApplication, getApplicationInClassByStudentID, getAllStudentApplication, getApplicationByID, getAllClassApplication } from "../service/applicationService";
+import ClassStore, { Class } from "./ClassStore";
 
 export type Application = {
     ApplicationID: string;
@@ -24,9 +25,14 @@ class ApplicationStore {
         console.log("Applications:", this.applications);
     }
 
-    async createApplication(application: Application) {
-        const response = await createApplication(application);
+    async createApplication(studentID: string, classId: string) {
+        const response = await createApplication(studentID, classId);
+        console.log("Create application response:", response);
+        if (!this.applications) {
+            this.applications = [];
+        }
         this.applications.push(response);
+        return response;
     }
 
     async updateApplication(applicationID: string, statusID: number, Remarks: string|null ) {
@@ -35,6 +41,39 @@ class ApplicationStore {
         if (index !== -1) {
             this.applications[index] = response;
         }
+        return response;
+    }
+
+    async getApplicationInClassByStudentID(classID: string, studentID: string ) {
+        const response = await getApplicationInClassByStudentID(classID, studentID)
+        if(response) {
+            return true
+        }
+        return false
+    }
+
+    async getAllStudentApplication(studentID: string) {
+        const response = await getAllStudentApplication(studentID); 
+        this.applications = response;
+
+        const classes = this.applications
+                .map((application) => {
+                    ClassStore.getAll();
+                    return ClassStore.classes.find((classItem) => classItem.ClassID === application.ClassID);
+                })
+                .filter((classItem): classItem is Class => classItem !== undefined); 
+        
+                return classes;
+    }
+
+    async getApplicationByID(applicationID: string) {
+        const response = await getApplicationByID(applicationID); 
+        return response;
+    }
+
+    async getAllClassApplication(classID: string) {
+        const response = await getAllClassApplication(classID); 
+        this.applications = response;
         return response;
     }
 }

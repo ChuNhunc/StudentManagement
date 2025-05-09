@@ -20,4 +20,15 @@ instance.interceptors.request.use(
     }
 );
 
+instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 404) {
+            console.warn("No application found (handled by interceptor).");
+            return Promise.resolve({ data: null }); // Trả về dữ liệu mặc định
+        }
+        return Promise.reject(error); // Ném lỗi khác
+    }
+);
+
 export default instance;

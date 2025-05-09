@@ -60,4 +60,5 @@ const getAllAdminAccount = async (req, res) => {
     }
 }
 
+
 module.exports = { getAllAccounts, getAllStudentAccount, getAllTeacherAccount, getAllAdminAccount };

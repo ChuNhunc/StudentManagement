@@ -34,7 +34,6 @@ const getClassByID = async (req, res) => {
     const classID = req.params.ClassID;
     const classInfo = await Class.findOne({
       where: { ClassID: classID },
-      include: Student,
     });
     if (!classInfo) {
       return res.status(404).json({ message: "Không tìm thấy lớp học" });
@@ -43,7 +42,7 @@ const getClassByID = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}
+};
 
 const getClassByCourseID = async (req, res) => {
   try {
@@ -59,7 +58,7 @@ const getClassByCourseID = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}
+};
 
 const getClassByClassName = async (req, res) => {
   try {
@@ -75,7 +74,7 @@ const getClassByClassName = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}
+};
 
 const updateClass = async (req, res) => {
   try {
@@ -90,7 +89,7 @@ const updateClass = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}
+};
 
 const deleteClass = async (req, res) => {
   try {
@@ -105,8 +104,7 @@ const deleteClass = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}
-
+};
 
 const getAllClassesByTeacherID = async (req, res) => {
   try {
@@ -121,7 +119,15 @@ const getAllClassesByTeacherID = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}
+};
 
-
-module.exports = { getAllClasses, createClass, getClassByID, getClassByCourseID, getClassByClassName, updateClass, deleteClass, getAllClassesByTeacherID };
+module.exports = {
+  getAllClasses,
+  createClass,
+  getClassByID,
+  getClassByCourseID,
+  getClassByClassName,
+  updateClass,
+  deleteClass,
+  getAllClassesByTeacherID,
+};

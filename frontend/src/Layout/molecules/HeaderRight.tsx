@@ -2,10 +2,10 @@ import { Box } from "@mui/material"
 import { ListIcon } from "./ListIcon"
 import { Icon } from "../atoms/icon"
 import { ProfilePhoto } from "../atoms/photo"
+import { HeaderMenu } from "./HeaderMenu"
 
 export const HeaderRight = () => {
     const listIcon = ['help', 'notification']
-    console.log(listIcon)
     return (
         <>
             <Box
@@ -36,7 +36,7 @@ export const HeaderRight = () => {
                         width: '30px',
                     }}
                 >
-                    <ProfilePhoto src='/images/profilePhoto.jpg' alt='profilePhoto'></ProfilePhoto>
+                    <HeaderMenu></HeaderMenu>
                 </Box>
             </Box>
         </>

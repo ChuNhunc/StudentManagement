@@ -49,6 +49,16 @@ const createStudent = async (req, res) => {
   try {
     const {StudentID, AccountID, FullName, DateOfBirth, Email, PhoneNumber, Address } =
       req.body;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(Email)) {
+      return res.status(400).json({ message: "Email không hợp lệ" });
+    }
+
+    if (PhoneNumber.length != 10 ) {
+      return res.status(400).json({ message: "Số điện thoại không hợp lệ" });
+    }
+
     const newStudent = await Student.create({
       StudentID: StudentID,
       AccountID: AccountID,
