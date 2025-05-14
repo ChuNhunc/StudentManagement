@@ -165,6 +165,7 @@ export const StudentManagement = () => {
                 }}
             >
                 <CreateButton 
+                    className="add-button"
                     sx={{marginLeft: '30px'}}
                     onClick={() => {
                         navigate('createstudent')

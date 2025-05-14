@@ -31,7 +31,7 @@ const Students = sequelize.define(
         },
         Address: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         }
     },
     {

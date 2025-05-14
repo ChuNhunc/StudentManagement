@@ -1,5 +1,5 @@
 import { Box, Button } from "@mui/material";
-import TextFieldItem, { ClassDatePicker, SelectItem } from "../../molecules/InputForm";
+import TextFieldItem, { ClassDatePicker, SelectItem, StudentDatePicker } from "../../molecules/InputForm";
 import { useContext, useState } from "react";
 import { SMContext } from "../../../context/context";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +32,8 @@ export const AddStudentForm = () => {
     const [FullNameError, setFullNameError] = useState(false);
     const [EmailError, setEmailError] = useState(false);
     const [PhoneNumberError, setPhoneNumberError] = useState(false);
+    const [NullEmailError, setNullEmailError] = useState(false);
+    const [NullPhoneNumberError, setNullPhoneNumberError] = useState(false);
 
     const handleError = {
         
@@ -41,17 +43,29 @@ export const AddStudentForm = () => {
         setFullNameError(false);
         setEmailError(false);
         setPhoneNumberError(false);
+        setNullEmailError(false);
+        setNullPhoneNumberError(false);
         let isValid = true;
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (!emailRegex.test(Email)) {
+        if (Email && !emailRegex.test(Email)) {
             setEmailError(true);
             isValid = false;
         }
 
-        if (PhoneNumber.length !== 10) {
+        if (PhoneNumber && PhoneNumber.length !== 10) {
             setPhoneNumberError(true);
+            isValid = false;
+        }
+
+        if (Email.trim() === '') {
+            setNullEmailError(true);
+            isValid = false;
+        }
+
+        if (PhoneNumber.trim() === '') {
+            setNullPhoneNumberError(true);
             isValid = false;
         }
 
@@ -77,8 +91,8 @@ export const AddStudentForm = () => {
         })
         } catch (error) {
             console.error("Failed to create student:", error);
-            
         }
+        alert("Thêm học sinh thành công")
         navigate(-1)
     }
 
@@ -92,7 +106,7 @@ export const AddStudentForm = () => {
                 }}
             >
                 <Box>
-                    <TextFieldItem title="Full Name" placeholder="Enter student name" 
+                    <TextFieldItem className="full-name" title="Full Name" placeholder="Enter student name" 
                         onChange={(e) => setFullName(e.target.value)}
                     ></TextFieldItem>
                      <Box 
@@ -103,12 +117,12 @@ export const AddStudentForm = () => {
                 </Box>
                 
                 <Box>
-                    <ClassDatePicker title="Date of Birth" 
+                    <StudentDatePicker className="date-of-birth" title="Date of Birth" 
                         onChange={(date) => setDateOfBirth(date)}
                     />
                 </Box>
                 <Box>
-                    <TextFieldItem title="Email" placeholder="Enter student email" 
+                    <TextFieldItem className="email" title="Email" placeholder="Enter student email" 
                         onChange={(e) => setEmail(e.target.value)}
                     ></TextFieldItem>
                     <Box 
@@ -116,9 +130,14 @@ export const AddStudentForm = () => {
                         sx={{padding: '0 10px', display: EmailError ? 'block' : 'none'}}>
                         <ErrorText>Email không đúng</ErrorText>
                     </Box>
+                    <Box 
+                        className='null-email-error'
+                        sx={{padding: '0 10px', display: NullEmailError ? 'block' : 'none'}}>
+                        <ErrorText>Email không được để trống</ErrorText>
+                    </Box>
                 </Box>
                 <Box>
-                    <TextFieldItem title="PhoneNumber" placeholder="Enter student phone number" 
+                    <TextFieldItem className="phone-number" title="PhoneNumber" placeholder="Enter student phone number" 
                         onChange={(e) => setPhoneNumber(e.target.value)}
                     ></TextFieldItem>
                     <Box 
@@ -126,9 +145,14 @@ export const AddStudentForm = () => {
                         sx={{padding: '0 10px', display: PhoneNumberError ? 'block' : 'none'}}>
                         <ErrorText>Số điện thoại phải có 10 chữ số</ErrorText>
                     </Box>
+                    <Box 
+                        className='null-phonenumber-error'
+                        sx={{padding: '0 10px', display: NullPhoneNumberError ? 'block' : 'none'}}>
+                        <ErrorText>Số điện thoại không được để trống</ErrorText>
+                    </Box>
                 </Box>
                 <Box>
-                    <TextFieldItem title="Address" placeholder="Enter student address" 
+                    <TextFieldItem className="address" title="Address" placeholder="Enter student address" 
                         onChange={(e) => setAddress(e.target.value)}
                     />
                 </Box>
@@ -144,6 +168,7 @@ export const AddStudentForm = () => {
                 }}
             >
                 <Button 
+                    className="cancel-button"
                     variant="outlined" 
                     sx={{marginRight: '10px'}}
                     onClick={() => {
@@ -151,6 +176,7 @@ export const AddStudentForm = () => {
                     }}
                 >Cancel</Button>
                 <Button 
+                    className="save-button"
                     variant="contained" 
                     sx={{}}
                     onClick={handleCreateStudent}

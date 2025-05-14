@@ -47,18 +47,24 @@ const getStudentByName = async (req, res) => {
 
 const createStudent = async (req, res) => {
   try {
-    const {StudentID, AccountID, FullName, DateOfBirth, Email, PhoneNumber, Address } =
-      req.body;
+    const {
+      StudentID,
+      AccountID,
+      FullName,
+      DateOfBirth,
+      Email,
+      PhoneNumber,
+      Address,
+    } = req.body;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(Email)) {
       return res.status(400).json({ message: "Email không hợp lệ" });
     }
 
-    if (PhoneNumber.length != 10 ) {
+    if (PhoneNumber.length != 10) {
       return res.status(400).json({ message: "Số điện thoại không hợp lệ" });
     }
-
     const newStudent = await Student.create({
       StudentID: StudentID,
       AccountID: AccountID,
@@ -90,7 +96,7 @@ const updateStudent = async (req, res) => {
     console.log(err);
     res.status(500).json({ message: err.message });
   }
-}
+};
 
 const deleteStudent = async (req, res) => {
   try {
@@ -107,7 +113,7 @@ const deleteStudent = async (req, res) => {
     console.log(err);
     res.status(500).json({ message: err.message });
   }
-}
+};
 
 module.exports = {
   getAllStudents,

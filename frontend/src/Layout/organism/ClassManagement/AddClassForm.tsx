@@ -5,6 +5,7 @@ import { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { SMContext } from "../../../context/context"
 import { ErrorText } from "../../atoms/Typography"
+import dayjs from "dayjs"
 
 const generateClassID = async (courseID: string) => {
     const datetime = new Date();
@@ -127,8 +128,8 @@ export const AddClassForm = () => {
                         <ErrorText>Số lượng học sinh không được để trống</ErrorText>
                     </Box>
                 </Box>
-                <ClassDatePicker defaultValue={date} title="Start Date" onChange={(date) => setStartDate(date)}/>
-                <ClassDatePicker defaultValue={nextDate} title="End Date" onChange={(date) => setEndDate(date)}/>
+                <ClassDatePicker minDate={dayjs(date).toDate()} defaultValue={date} title="Start Date" onChange={(date) => setStartDate(date)}/>
+                <ClassDatePicker minDate={dayjs(date).toDate()} defaultValue={nextDate} title="End Date" onChange={(date) => setEndDate(date)}/>
             </Box>
             <Box className="form-button" 
                 sx={{

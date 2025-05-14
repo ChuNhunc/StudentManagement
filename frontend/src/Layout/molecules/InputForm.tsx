@@ -15,6 +15,7 @@ type TextFieldItemProps = {
   children?: React.ReactNode;
   value?: string | number | Date | null;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 }
 
 const InputBox = styled('div')({
@@ -29,13 +30,14 @@ const InputTitle = styled('p')({
   marginBottom: '5px',
 })
 
-export default function TextFieldItem({title, placeholder, value, onChange}: TextFieldItemProps) {
+export default function TextFieldItem({title, placeholder, value, onChange, className}: TextFieldItemProps) {
   return (
     <>
       <InputBox>
         <InputTitle
         >{title}</InputTitle>
         <TextField 
+          className={className}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
@@ -67,9 +69,10 @@ type SelectItemProps = {
   onChange?: (event: SelectChangeEvent<string | number | Date>) => void;
   type: 'course' | 'teacher'
   value?: string | number | Date ;
+  className?: string;
 };
 
-export const SelectItem = ({title, onChange, type, value}: SelectItemProps) => {
+export const SelectItem = ({title, onChange, type, value, className}: SelectItemProps) => {
   const [listMenuItem, setListMenuItem] = React.useState<Course[] | Teacher[]>([]);
   const [defaultValue, setDefaultValue] = React.useState<string | number | undefined>(undefined); 
   const context = React.useContext(SMContext);
@@ -98,6 +101,7 @@ export const SelectItem = ({title, onChange, type, value}: SelectItemProps) => {
           sx={{ width: '100%' }} 
           value={value} size="small"
           onChange={onChange}
+          className={className}
         >
             {listMenuItem?.map((item) => (
             <MenuItem
@@ -117,15 +121,35 @@ type ClassDatePickerProps = {
   title: string;
   onChange?: (date: Date | null) => void; // Hàm callback để truyền giá trị ngày
   defaultValue?: Date | null; // Giá trị mặc định của DatePicker
+  className?: string;
+  minDate?: Date;
 };
 
-export const ClassDatePicker = ({title, onChange, defaultValue}: ClassDatePickerProps) => {
+export const ClassDatePicker = ({title, onChange, defaultValue, className, minDate}: ClassDatePickerProps) => {
   return(
     <>
       <InputBox>
         <InputTitle>{title}</InputTitle>
         <DatePicker 
-          minDate={dayjs(new Date())}
+          className={className}
+          minDate={dayjs(minDate)}
+          defaultValue={defaultValue ? dayjs(defaultValue) : null}
+          slotProps={{ textField: { size: 'small'} }}
+          sx={{width: '100%'}}
+          onChange={(value: Dayjs | null) => onChange?.(value ? value.toDate() : null)}
+        />
+      </InputBox>
+    </>
+  )
+}
+
+export const StudentDatePicker = ({title, onChange, defaultValue, className}: ClassDatePickerProps) => {
+  return(
+    <>
+      <InputBox>
+        <InputTitle>{title}</InputTitle>
+        <DatePicker 
+          className={className}
           defaultValue={defaultValue ? dayjs(defaultValue) : null}
           slotProps={{ textField: { size: 'small'} }}
           sx={{width: '100%'}}
