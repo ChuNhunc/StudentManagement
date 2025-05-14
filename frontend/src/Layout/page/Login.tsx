@@ -30,9 +30,7 @@ const Login = () => {
       const roleID = await login(username, password);
       if (roleID === 1) {
         const student = await context?.StudentStore.getById(username);
-        console.log(student);
         context?.UserStore.saveUsserProfile(student);
-        console.log(JSON.stringify(context?.UserStore.user))
         navigate('/student'); 
       }else if (roleID === 3) {
         navigate('/admin'); 

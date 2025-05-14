@@ -11,7 +11,6 @@ type MainTemplateProps = {
 export const AdminTemplate = ({ children}: MainTemplateProps) => {
     const location = useLocation();
     const state = location.state;
-    console.log(state)
     return (
         <Box>
             <Box
@@ -58,9 +57,3 @@ export const StudentTemplate = ({ children}: MainTemplateProps) => {
         </Box>
     )
 }
-
-
-
-
-
-

@@ -179,7 +179,7 @@ export const TeacherManagement = () => {
                     <CreateButton 
                         sx={{marginLeft: '30px'}}
                         onClick={() => {
-                            navigate('createstudent')
+                            navigate('createteacher')
                         }}
                     >Add</CreateButton>
                     <Button  

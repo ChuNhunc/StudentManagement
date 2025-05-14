@@ -1,9 +1,10 @@
-import { Box, Select } from "@mui/material"
+import { Box, Select, TextField } from "@mui/material"
 import { ToolBox } from "../../molecules/ToolBox"
 import { AccountTable, AccountTableProps, StudentTable } from "../../molecules/Table"
 import { SelectItem } from "../../molecules/SelectItem"
 import React, { useContext } from "react"
 import { SMContext } from "../../../context/context"
+import { Icon } from "../../atoms/icon"
 
 export const TeacherAccountManagement = () => {
     const context = useContext(SMContext)
@@ -42,7 +43,7 @@ export const TeacherAccountManagement = () => {
 
     return (
         <>
-            <ToolBox 
+            {/* <ToolBox 
                 route="createstudent"
                 onChange={(e) => {
                     setSearchText(e.target.value)
@@ -53,7 +54,42 @@ export const TeacherAccountManagement = () => {
                         handleSearch()
                     }
                 }}
-            />
+            /> */}
+            <Box 
+                className='search-box'
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    // marginLeft: '30px',
+                    // marginBottom: '30px',
+                    margin: '30px 0 30px 30px',
+                    justifyContent: 'flex-end',
+                }}
+            >
+                <>
+                        <TextField
+                        id="search-bar"
+                        className="text"
+                        onChange={(e) => {
+                            setSearchText(e.target.value)
+                        }}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                            if (e.key === 'Enter') {
+                                handleSearch()
+                            }
+                        }}
+                        variant="outlined"
+                        placeholder="Search..."
+                        size="small"
+                        />
+                        <Box
+                        onClick={handleSearch}
+                        >
+                        <Icon name='search' sx={{cursor: 'pointer'}}></Icon>
+                    </Box>
+                    </>
+            </Box>
             <Box className='table'>
                 <AccountTable rows={rows}/>
             </Box>
@@ -98,8 +134,8 @@ export const StudentAccountManagement = () => {
 
     return (
         <>
-            <ToolBox 
-                route="createstudent"
+            {/* <ToolBox 
+                route="createaccount"
                 onChange={(e) => {
                     setSearchText(e.target.value)
                 }}
@@ -109,8 +145,43 @@ export const StudentAccountManagement = () => {
                         handleSearch()
                     }
                 }}
-            />
-            <Box className='table'>
+            /> */}
+            <Box 
+                className='search-box'
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    marginRight: '30px',
+                    marginBottom: '20px',
+                    justifyContent: 'flex-end',
+                    marginTop: '20px',
+                }}
+            >
+                <>
+                        <TextField
+                        id="search-bar"
+                        className="text"
+                        onChange={(e) => {
+                            setSearchText(e.target.value)
+                        }}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                            if (e.key === 'Enter') {
+                                handleSearch()
+                            }
+                        }}
+                        variant="outlined"
+                        placeholder="Search..."
+                        size="small"
+                        />
+                        <Box
+                        onClick={handleSearch}
+                        >
+                        <Icon name='search' sx={{cursor: 'pointer'}}></Icon>
+                    </Box>
+                    </>
+            </Box>
+            <Box className='table' sx={{width: '100%'}}>
                 <AccountTable rows={rows}/>
             </Box>
         </>

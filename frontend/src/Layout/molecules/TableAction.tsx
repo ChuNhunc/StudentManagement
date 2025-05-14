@@ -4,12 +4,14 @@ type ButtonProps = {
     onClick?: () => void;
     children?: React.ReactNode;
     sx?: SxProps<Theme>
+    className?: string;
 }
 
-export const AccountTableAction = ({children, onClick,sx}: ButtonProps) => {
+export const AccountTableAction = ({children, onClick,sx, className}: ButtonProps) => {
     return (
         <>
             <Button
+                className={className}
                 onClick={onClick}
                 sx={{
                     padding: '5px 10px',

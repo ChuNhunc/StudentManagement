@@ -131,7 +131,7 @@ export const StudentManagement = () => {
               PhoneNumber: item.PhoneNumber,
               Address: item.Address,
               AccountID: item.AccountID,
-              hasAccount: !!item.AccountID, // Thêm trạng thái hasAccount
+              hasAccount: !!item.AccountID,
           }));
           setRows(fetchedRows || []);
           setOriginalRows(fetchedRows || []);

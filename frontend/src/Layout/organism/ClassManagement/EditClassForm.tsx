@@ -12,11 +12,10 @@ export const EditClassForm = () => {
     const date = new Date()
     const location = useLocation()
     const state = location.state
+    const classID = state.ClassID
     const nextDate = new Date(date.getTime() + 24 * 60 * 60 * 1000) 
     const context = useContext(SMContext)
     const [classNameError, setClassNameError] = useState(false)
-    const [courseError, setCourseError] = useState(false)
-    const [teacherError, setTeacherError] = useState(false)
     const [studentNumberError, setStudentNumberError] = useState(false)
     const [studentNumberValidate, setStudentNumberValidate] = useState(false)
     const [className, setClassName] = useState<string>(state.ClassName)
@@ -28,13 +27,9 @@ export const EditClassForm = () => {
 
     const handleSaveButtonClick = async () => {
         setClassNameError(false)
-        setCourseError(false)
-        setTeacherError(false)
         setStudentNumberError(false)
 
         let isValid = true
-
-        const classID = state.ClassID
 
         try {
             const listStudent = await getAllStudentsInClass(classID)
@@ -60,14 +55,14 @@ export const EditClassForm = () => {
             setClassNameError(true)
             isValid = false
         }
-        if (course.trim() === '') {
-            setCourseError(true)
-            isValid = false
-        }
-        if (teacher.trim() === '') {
-            setTeacherError(true)
-            isValid = false
-        }
+        // if (course.trim() === '') {
+        //     setCourseError(true)
+        //     isValid = false
+        // }
+        // if (teacher.trim() === '') {
+        //     setTeacherError(true)
+        //     isValid = false
+        // }
         if (studentNumber <= 0) {
             setStudentNumberError(true)
             isValid = false

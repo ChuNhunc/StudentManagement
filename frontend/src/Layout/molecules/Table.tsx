@@ -112,7 +112,7 @@ type StudentTableProps = {
   onSelectionModelChange?: (newSelection: GridRowSelectionModel) => void;
 }
 
-export const StudentTable = observer(({rows, columns, onSelectionModelChange}: StudentTableProps) => {
+export const StudentTable = ({rows, columns, onSelectionModelChange}: StudentTableProps) => {
     return (
         <>
             <Paper sx={{ height: 400, width: '90%', margin: 'auto' }}>
@@ -129,7 +129,7 @@ export const StudentTable = observer(({rows, columns, onSelectionModelChange}: S
             </Paper>
         </>
     )
-})
+}
 
 const AccountColumn: GridColDef[] = [
   {field: 'Name', headerName: 'Name', flex: 2},
@@ -140,11 +140,13 @@ const AccountColumn: GridColDef[] = [
     headerName: '',
     flex: 1,
     renderCell: (params) => (
-      <AccountTableAction 
-        onClick={() => handleButtonClick(params.row)}
-      >
-        Details
-      </AccountTableAction>
+      <Box sx={{alignItems: 'center', width: '100%', height: '100%', display: 'flex', justifyContent: 'center'}}>
+        <AccountTableAction 
+          onClick={() => handleButtonClick(params.row)}
+        >
+          Details
+        </AccountTableAction>
+      </Box>
     ),
   },
 ];
@@ -250,7 +252,7 @@ export const ApplicationTable = observer(({rows, setRows, setDisplay, onSelectio
   const ApplicationColumn: GridColDef[] = [
     {field: 'ApplicationID', headerName: 'ApplicationID', flex: 1},
     {field: 'StudentName', headerName: 'Student Name', flex: 1},
-    {field: 'Status', headerName: 'Status', flex: 1},
+    {field: 'Status', headerName: 'Status', flex: 1, cellClassName: 'status-column'},
     {field: 'ApplicationDate', headerName: 'Application Date', flex: 1, type: 'date'},
     {field: 'ModifiedDate', headerName: 'Modified Date', flex: 1, type: 'date'},
     {
@@ -260,6 +262,7 @@ export const ApplicationTable = observer(({rows, setRows, setDisplay, onSelectio
       renderCell: (params) => (
         <Box sx={{alignItems: 'center',justifyContent: 'center', display: 'flex', gap: '5px', width: '100%',height: '100%'}}>
           <AccountTableAction 
+            className="approved-btn"
             onClick={() => HandleApproved(params.row, setRows, setDisplay)}
             sx={{
               fontSize: '8px', backgroundColor: '#1976d2', color: '#fff',
@@ -269,6 +272,7 @@ export const ApplicationTable = observer(({rows, setRows, setDisplay, onSelectio
             Approved
           </AccountTableAction>
           <AccountTableAction 
+            className="rejected-btn"
             onClick={() => HandleReject(params.row, setRows, setDisplay)}
             sx={{
               fontSize: '8px', backgroundColor: '#ff0000', color: '#fff', 
@@ -278,8 +282,9 @@ export const ApplicationTable = observer(({rows, setRows, setDisplay, onSelectio
             Rejected
           </AccountTableAction>
           <Box 
+            className="status-box"
             sx={{
-              backgroundColor: params.row.Status === "Approved" ? "#4caf50" : params.row.Status === "Rejected" ? "#f44336" : "#ffeb3b",
+              backgroundColor: params.row.Status === "Approved" ? "#4caf50" : params.row.Status === "Rejected" ? "#f44336" : "#f44336",
               display: params.row.Status === "Pending" ? 'none' : 'block',
               color: "#fff",
               padding: "5px",

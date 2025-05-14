@@ -88,7 +88,7 @@ export const ClassManagement = () => {
                 <CreateButton 
                     sx={{marginLeft: '30px'}}
                     onClick={() => {
-                        navigate('createstudent')
+                        navigate('createclass')
                     }}
                 >Add</CreateButton>
                 <Button  

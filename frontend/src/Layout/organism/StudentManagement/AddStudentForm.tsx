@@ -65,7 +65,8 @@ export const AddStudentForm = () => {
         }
 
         const newStudentID = await GenerateStudentID(); 
-        context?.StudentStore.create({
+        try {
+            context?.StudentStore.create({
             StudentID: newStudentID,
             FullName: FullName,
             DateOfBirth: DateOfBirth,
@@ -74,6 +75,10 @@ export const AddStudentForm = () => {
             Address: Address,
             AccountID: null,
         })
+        } catch (error) {
+            console.error("Failed to create student:", error);
+            
+        }
         navigate(-1)
     }
 

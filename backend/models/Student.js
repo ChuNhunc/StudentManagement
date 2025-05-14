@@ -19,7 +19,7 @@ const Students = sequelize.define(
         },
         DateOfBirth: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: true
         },
         Email: {
             type: DataTypes.STRING,

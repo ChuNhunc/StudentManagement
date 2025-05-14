@@ -122,12 +122,14 @@ export const ApplicationList = () => {
                         className='search-box'
                     >
                         <Button  
+                          className= 'reverse-status-btn'
                           disabled={
                             selectedRows.length !== 1 || 
                             !rows.find((row) => row.ApplicationID === selectedRows[0] && 
                                 (row.Status === "Rejected" || row.Status === "Approved")) 
                           }
                           sx={{float: 'left'}}
+                          disableRipple
                           onClick={() => {
                             const selectedRow = rows.find((row) => row.ApplicationID === selectedRows[0]);
                             if (selectedRow) {

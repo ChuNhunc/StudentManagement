@@ -35,6 +35,7 @@ class StudentStore {
     async create(student: Student) {
         const newStudent = await createStudent(student);
         this.student.push(newStudent);
+        await this.getAll();
     }
 
     async update(StudentID: string, student: Student) {

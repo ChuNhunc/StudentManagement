@@ -125,6 +125,7 @@ export const ClassDatePicker = ({title, onChange, defaultValue}: ClassDatePicker
       <InputBox>
         <InputTitle>{title}</InputTitle>
         <DatePicker 
+          minDate={dayjs(new Date())}
           defaultValue={defaultValue ? dayjs(defaultValue) : null}
           slotProps={{ textField: { size: 'small'} }}
           sx={{width: '100%'}}
@@ -146,7 +147,7 @@ export const SearchBox = ({onClick, onChange, onKeyDown}: SearchBoxProps) => {
     <>
       <TextField
       id="search-bar"
-      className="text"
+      className="search-box"
       onChange={onChange}
       onKeyDown={onKeyDown}
       variant="outlined"
@@ -156,6 +157,7 @@ export const SearchBox = ({onClick, onChange, onKeyDown}: SearchBoxProps) => {
       />
       <Box
         onClick={onClick}
+        className='search-btn'
       >
         <Icon  name='search' sx={{cursor: 'pointer'}}></Icon>
       </Box>
